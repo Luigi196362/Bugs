@@ -6,8 +6,8 @@ metadata:
    app: postgres
 data:
  PROD_SECRET_KEY: luigi196362
- PROD_DATABASE: kdobrxpj
- PROD_USER: kdobrxpj
- PROD_PASSWORD: eqzyq2KHIWv-52BEJSxJ9xQR2JAwtpTT
- PROD_HOST: balarama.db.elephantsql.com
+ PROD_DATABASE: tbhujxek
+ PROD_USER: tbhujxek
+ PROD_PASSWORD: z7PUqS8e1vJbigZv9fEJmXVHzxT4xtsH
+ PROD_HOST: 	balarama.db.elephantsql.com
  PROD_PORT: "5432"
