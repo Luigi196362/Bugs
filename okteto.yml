@@ -1,0 +1,12 @@
+build:
+ Luigi196362:  # cambiar por su namespace de okteto
+   image: okteto.dev/luigi196362:latest  # cambiar por su namespace de okteto
+
+deploy:
+ - okteto build # build the image with the latest code
+ - kubectl apply -f manifests # create all the resources in kubernetes
+dev:
+ Luigi196362:
+   command: bash
+   sync:
+   - .:/Bugs   # cambiar por su proyecto
