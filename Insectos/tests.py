@@ -24,11 +24,11 @@ Insectos_QUERY = '''
     longitud 
     color 
     numalas
-    descripcion}}
+    }}
 '''
 CREATE_Insectos_MUTATION = '''
-mutation createInsectosMutation($nombre: String, $nomcientifico: String, $clase: String, $orden: String, $familia: String, $habitat: String, $dieta: String, $longitud: String, $color: String, $numalas: String, $descripcion: String){
- createInsectos(nombre: $nombre, nomcientifico: $nomcientifico, clase: $clase, orden: $orden, familia: $familia, habitat: $habitat, dieta: $dieta, longitud: $longitud, color: $color, numalas: $numalas, descripcion: $descripcion){
+mutation createInsectosMutation($nombre: String, $nomcientifico: String, $clase: String, $orden: String, $familia: String, $habitat: String, $dieta: String, $longitud: String, $color: String, $numalas: String){
+ createInsectos(nombre: $nombre, nomcientifico: $nomcientifico, clase: $clase, orden: $orden, familia: $familia, habitat: $habitat, dieta: $dieta, longitud: $longitud, color: $color, numalas: $numalas){
   nombre
   nomcientifico
   clase
@@ -39,7 +39,7 @@ mutation createInsectosMutation($nombre: String, $nomcientifico: String, $clase:
   longitud
   color
   numalas
-  descripcion
+  
  }
 }
 '''
@@ -72,7 +72,7 @@ class InsectoTestCase(GraphQLTestCase):
                        'familia': "a", 'habitat': "a", 
                        'dieta': "a", 
                        'longitud': "a", 'color': "a", 
-                       'numalas': "a",'descripcion': "a"}
+                       'numalas': "a"}
         )
         print('mutation')
         print(response)

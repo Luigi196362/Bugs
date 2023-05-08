@@ -12,6 +12,5 @@ class Insecto(models.Model):
     longitud = models.TextField(default='_',blank=False)
     color = models.TextField(default='_',blank=False)
     numalas = models.TextField(default='_',blank=False)
-    descripcion = models.TextField(default='_',blank=False)
 
 # Create your models here.

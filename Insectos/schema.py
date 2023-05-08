@@ -31,7 +31,7 @@ class CreateInsecto(graphene.Mutation):
     longitud=graphene.String()
     color=graphene.String()
     numalas=graphene.String()
-    descripcion=graphene.String()
+    
 
     #2
     class Arguments:
@@ -45,9 +45,9 @@ class CreateInsecto(graphene.Mutation):
         longitud=graphene.String()
         color=graphene.String()
         numalas=graphene.String()
-        descripcion=graphene.String()
+        
     #3
-    def mutate(self, info , nombre, nomcientifico, clase, orden, familia, habitat, dieta, longitud, color, numalas,descripcion):
+    def mutate(self, info , nombre, nomcientifico, clase, orden, familia, habitat, dieta, longitud, color, numalas):
         Insectos = Insecto(
             nombre=nombre, 
             nomcientifico=nomcientifico, 
@@ -59,7 +59,7 @@ class CreateInsecto(graphene.Mutation):
             longitud=longitud, 
             color=color, 
             numalas=numalas,
-            descripcion=descripcion
+            
             )
         Insectos.save()
 
@@ -75,7 +75,7 @@ class CreateInsecto(graphene.Mutation):
             longitud=Insectos.longitud,
             color=Insectos.color,
             numalas=Insectos.numalas,
-            descripcion=Insectos.descripcion
+            
 
         )
 
