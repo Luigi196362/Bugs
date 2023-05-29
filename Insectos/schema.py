@@ -3,6 +3,7 @@ from graphene_django import DjangoObjectType
 from users.schema import UserType
 from Insectos.models import Insecto, Vote
 from graphql import GraphQLError
+from django.db.models import Q
 
 from .models import Insecto
 
@@ -116,12 +117,27 @@ class CreateVote(graphene.Mutation):
         return CreateVote(user=user, insecto=insecto)
         
 class Query(graphene.ObjectType):
-    Insectos = graphene.List(InsectoType)
+    Insectos = graphene.List(InsectoType, search=graphene.String())
     votes = graphene.List(VoteType)
 
-    def resolve_Insectos(self, info, **kwargs):
-        return Insecto.objects.all()
+    def resolve_Insectos(self, info, search=None, **kwargs):
+        if search:
+            filter = (
+                Q(nombre__icontains=search) |
+                Q(nomcientifico__icontains=search)|
+                Q(clase__icontains=search)|
+                Q(orden__icontains=search)|
+                Q(familia__icontains=search)|
+                Q(habitat__icontains=search)|
+                Q(dieta__icontains=search)|
+                Q(longitud__icontains=search)|
+                Q(color__icontains=search)|
+                Q(numalas__icontains=search)
+            )
+            return Insecto.objects.filter(filter)
 
+        return Insecto.objects.all()
+    
     def resolve_votes(self, info, **kwargs):
         return Vote.objects.all()
     
@@ -129,5 +145,6 @@ class Query(graphene.ObjectType):
 class Mutation(graphene.ObjectType):
     create_Insectos = CreateInsecto.Field()
     create_vote = CreateVote.Field()
+
 
 schema = graphene.Schema(query=Query,mutation=Mutation)
