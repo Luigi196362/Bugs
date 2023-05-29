@@ -2,6 +2,7 @@ import graphene
 from graphene_django import DjangoObjectType
 from users.schema import UserType
 from Insectos.models import Insecto, Vote
+from graphql import GraphQLError
 
 from .models import Insecto
 
@@ -101,7 +102,7 @@ class CreateVote(graphene.Mutation):
     def mutate(self, info, insecto_id):
         user = info.context.user
         if user.is_anonymous:
-            raise Exception('You must be logged to vote!')
+            raise GraphQLError('You must be logged to vote!')
 
         insecto = Insecto.objects.filter(id=insecto_id).first()
         if not insecto:
