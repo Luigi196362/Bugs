@@ -1,5 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
+from users.schema import UserType
+from Insectos.models import Insecto, Vote
 
 from .models import Insecto
 
@@ -7,6 +9,10 @@ from .models import Insecto
 class InsectoType(DjangoObjectType):
     class Meta:
         model = Insecto
+
+class VoteType(DjangoObjectType):
+    class Meta:
+        model = Vote
 
 
 class Query(graphene.ObjectType):
@@ -31,6 +37,7 @@ class CreateInsecto(graphene.Mutation):
     longitud=graphene.String()
     color=graphene.String()
     numalas=graphene.String()
+    posted_by = graphene.Field(UserType)
     
 
     #2
@@ -48,6 +55,7 @@ class CreateInsecto(graphene.Mutation):
         
     #3
     def mutate(self, info , nombre, nomcientifico, clase, orden, familia, habitat, dieta, longitud, color, numalas):
+        user = info.context.user or None
         Insectos = Insecto(
             nombre=nombre, 
             nomcientifico=nomcientifico, 
@@ -59,6 +67,7 @@ class CreateInsecto(graphene.Mutation):
             longitud=longitud, 
             color=color, 
             numalas=numalas,
+            posted_by=user,
             
             )
         Insectos.save()
@@ -75,13 +84,49 @@ class CreateInsecto(graphene.Mutation):
             longitud=Insectos.longitud,
             color=Insectos.color,
             numalas=Insectos.numalas,
+            posted_by=Insectos.posted_by,
             
 
         )
 
 
 #4
+class CreateVote(graphene.Mutation):
+    user = graphene.Field(UserType)
+    insecto = graphene.Field(InsectoType)
+
+    class Arguments:
+        insecto_id = graphene.Int()
+
+    def mutate(self, info, insecto_id):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('You must be logged to vote!')
+
+        insecto = Insecto.objects.filter(id=insecto_id).first()
+        if not insecto:
+            raise Exception('Invalid Insecto!')
+
+        Vote.objects.create(
+            user=user,
+            insecto=insecto,
+        )
+
+        return CreateVote(user=user, insecto=insecto)
+        
+class Query(graphene.ObjectType):
+    Insectos = graphene.List(InsectoType)
+    votes = graphene.List(VoteType)
+
+    def resolve_Insectos(self, info, **kwargs):
+        return Insecto.objects.all()
+
+    def resolve_votes(self, info, **kwargs):
+        return Vote.objects.all()
+    
+
 class Mutation(graphene.ObjectType):
     create_Insectos = CreateInsecto.Field()
+    create_vote = CreateVote.Field()
 
 schema = graphene.Schema(query=Query,mutation=Mutation)
