@@ -45,6 +45,22 @@ jobs:
       run: cat .env
   #  - name: run tests 
     #  run: python manage.py test --settings=settings.testing -v 3 --keepdb
+    - name: update DEV_SECRET_KEY
+      run: sed -i 's/MYDEVSECRETKEY/${{ secrets.DEV_SECRET_KEY }}/g' manifests/adsoftsito-configmap.yaml      
+    - name: update MY_DEV_DATABASE
+      run: sed -i 's/MYDEVDATABASE/${{ secrets.DEV_DATABASE }}/g' manifests/adsoftsito-configmap.yaml      
+    - name: update MY_DEV_USER
+      run: sed -i 's/MYDEVUSER/${{ secrets.DEV_USER }}/g' manifests/adsoftsito-configmap.yaml      
+    - name: update MY_DEV_PASSWORD
+      run: sed -i 's/MYDEVPASSWORD/${{ secrets.DEV_PASSWORD }}/g' manifests/adsoftsito-configmap.yaml      
+    - name: update MY_DEV_HOST 
+      run: sed -i 's/MYDEVHOST/${{ secrets.DEV_HOST }}/g' manifests/adsoftsito-configmap.yaml      
+    - name: update MYDEVPORT 
+      run: sed -i 's/MYDEVPORT/${{ secrets.DEV_PORT }}/g' manifests/adsoftsito-configmap.yaml      
+    - name: show config 
+      run: cat manifests/adsoftsito-configmap.yaml
+      
+    
     - uses: okteto/context@2.7.0
       with:
         token: ${{ secrets.OKTETO_TOKEN }}
