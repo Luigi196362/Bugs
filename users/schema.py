@@ -31,10 +31,10 @@ class CreateUser(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
 
-    # ...code
+
 class Query(graphene.ObjectType):
-    me = graphene.Field(UserType)
     users = graphene.List(UserType)
+    me = graphene.Field(UserType)
 
     def resolve_users(self, info):
         return get_user_model().objects.all()
