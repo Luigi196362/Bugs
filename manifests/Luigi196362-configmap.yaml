@@ -5,9 +5,15 @@ metadata:
  labels:
    app: postgres
 data:
+ DEV_SECRET_KEY: luigi196362
+ DEV_DATABASE: aubznagu
+ DEV_USER: aubznagu
+ DEV_PASSWORD: uvceiX1bBgdtpi2fPs_2jUrHI9hfAbFc
+ DEV_HOST: balarama.db.elephantsql.com
+ DEV_PORT: "5432"
  PROD_SECRET_KEY: luigi196362
- PROD_DATABASE: kdobrxpj
- PROD_USER: kdobrxpj
- PROD_PASSWORD: eqzyq2KHIWv-52BEJSxJ9xQR2JAwtpTT
- PROD_HOST: balarama.db.elephantsql.com
+ PROD_DATABASE: aubznagu
+ PROD_USER: aubznagu
+ PROD_PASSWORD: uvceiX1bBgdtpi2fPs_2jUrHI9hfAbFc
+ PROD_HOST: 	balarama.db.elephantsql.com
  PROD_PORT: "5432"
