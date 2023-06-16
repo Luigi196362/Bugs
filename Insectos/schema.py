@@ -1,9 +1,11 @@
 import graphene
 from graphene_django import DjangoObjectType
-from users.schema import UserType
 from Insectos.models import Insecto, Vote
 from graphql import GraphQLError
 from django.db.models import Q
+from users.schema import UserType
+
+
 from .models import Insecto
 
 
@@ -15,7 +17,6 @@ class VoteType(DjangoObjectType):
     class Meta:
         model = Vote
 
-
 class Query(graphene.ObjectType):
     Insectos = graphene.List(InsectoType, search=graphene.String())
     votes = graphene.List(VoteType)
@@ -24,25 +25,14 @@ class Query(graphene.ObjectType):
         if search:
             filter = (
                 Q(nombre__icontains=search) |
-                Q(nomcientifico__icontains=search)|
-                Q(clase__icontains=search)|
-                Q(orden__icontains=search)|
-                Q(familia__icontains=search)|
-                Q(habitat__icontains=search)|
-                Q(dieta__icontains=search)|
-                Q(longitud__icontains=search)|
-                Q(color__icontains=search)|
-                Q(numalas__icontains=search)
+                Q(color__icontains=search)
             )
             return Insecto.objects.filter(filter)
-
+        
         return Insecto.objects.all()
     
     def resolve_votes(self, info, **kwargs):
         return Vote.objects.all()
-        
-    
-    
 
     # ...code
 #1
@@ -76,7 +66,9 @@ class CreateInsecto(graphene.Mutation):
         
     #3
     def mutate(self, info , nombre, nomcientifico, clase, orden, familia, habitat, dieta, longitud, color, numalas):
+        
         user = info.context.user or None
+
         Insectos = Insecto(
             nombre=nombre, 
             nomcientifico=nomcientifico, 
@@ -88,7 +80,8 @@ class CreateInsecto(graphene.Mutation):
             longitud=longitud, 
             color=color, 
             numalas=numalas,
-            posted_by=user,    
+            posted_by=user
+            
             )
         Insectos.save()
 
@@ -104,13 +97,9 @@ class CreateInsecto(graphene.Mutation):
             longitud=Insectos.longitud,
             color=Insectos.color,
             numalas=Insectos.numalas,
-            posted_by=Insectos.posted_by,
-            
-
+            posted_by=Insectos.posted_by
         )
 
-
-#4
 class CreateVote(graphene.Mutation):
     user = graphene.Field(UserType)
     insecto = graphene.Field(InsectoType)
@@ -121,25 +110,23 @@ class CreateVote(graphene.Mutation):
     def mutate(self, info, insecto_id):
         user = info.context.user
         if user.is_anonymous:
-            raise GraphQLError('You must be logged to vote!')
+            raise GraphQLError('Debes iniciar sesión para votar.')
 
         insecto = Insecto.objects.filter(id=insecto_id).first()
         if not insecto:
-            raise Exception('Invalid Link!')
+            raise GraphQLError('Insecto no válido.')
 
         Vote.objects.create(
             user=user,
-            insecto=insecto,
+            insecto=insecto
         )
 
         return CreateVote(user=user, insecto=insecto)
-        
 
-    
-
+#4
 class Mutation(graphene.ObjectType):
     create_Insectos = CreateInsecto.Field()
+    create_link = CreateInsecto.Field()
     create_vote = CreateVote.Field()
-
 
 schema = graphene.Schema(query=Query,mutation=Mutation)
